@@ -13,7 +13,7 @@
         <div class="header-content">
             <div class="header-left">
                 <img src="../formulama.png" alt="Logo Formulama" class="logo">
-                <h1><strong>Formulama</strong></h1>
+                <h1>Formulama</h1>
             </div>
             <nav class="main-nav">
                 <ul>
@@ -31,58 +31,76 @@
             <div class="hero-content">
                 <h2 class="hero-title">Nous sommes ici pour vous aider</h2>
                 <p class="hero-subtitle">
-                    Des questions sur Formulama ? Contactez-nous directement et nous vous répondrons dans les meilleurs délais.
+                    Des questions ? Contactez-nous directement et notre équipe vous répondra rapidement.
                 </p>
             </div>
         </section>
 
-        <!-- Section Formulaire et contacts -->
-        <section class="form-section">
-            <h2>Contactez-nous</h2>
-            <p class="form-description">Vous avez des questions ou souhaitez en savoir plus sur notre solution ? Remplissez ce formulaire et notre équipe vous recontactera rapidement.</p>
-
-            <div class="contact-groups">
-                <div class="contact-group">
-                    <h3>👨‍💻 Développeurs</h3>
-                    <p>Pour toute question technique, bugs ou suggestions d'amélioration.</p>
-                    <div class="email-list">
-                        <p><a href="mailto:matheo.guerin@ensitech.eu">matheo.guerin@ensitech.eu</a></p>
-                        <p><a href="mailto:mathys.policarpe@ensitech.eu">mathys.policarpe@ensitech.eu</a></p>
+        <!-- Section Contacts directs -->
+        <section class="intro-section">
+            <div class="intro-content">
+                <h2>Notre équipe</h2>
+                <div class="contact-groups">
+                    <div class="contact-group">
+                        <h3>👨‍💻 Développeurs</h3>
+                        <p>Pour toute question technique, bugs ou suggestions d'amélioration.</p>
+                        <div class="email-list">
+                            <p><a href="mailto:matheo.guerin@ensitech.eu">matheo.guerin@ensitech.eu</a></p>
+                            <p><a href="mailto:mathys.policarpe@ensitech.eu">mathys.policarpe@ensitech.eu</a></p>
+                        </div>
                     </div>
-                </div>
-                <div class="contact-group">
-                    <h3>📋 Responsables du projet</h3>
-                    <p>Pour les partenariats, questions administratives ou information générale.</p>
-                    <div class="email-list">
-                        <p><a href="mailto:edouard.hillion@ensitech.eu">edouard.hillion@ensitech.eu</a></p>
-                        <p><a href="mailto:cyril.laurent@ensitech.eu">cyril.laurent@ensitech.eu</a></p>
+                    <div class="contact-group">
+                        <h3>📋 Responsables</h3>
+                        <p>Pour les partenariats et questions administratives.</p>
+                        <div class="email-list">
+                            <p><a href="mailto:edouard.hillion@ensitech.eu">edouard.hillion@ensitech.eu</a></p>
+                            <p><a href="mailto:cyril.laurent@ensitech.eu">cyril.laurent@ensitech.eu</a></p>
+                        </div>
                     </div>
                 </div>
             </div>
+        </section>
 
-            <form action="#" method="POST" class="contact-form">
-                <div class="form-group">
-                    <label for="name">Nom / Prénom :</label>
-                    <input type="text" id="name" name="user_name" required>
-                </div>
+        <!-- Section Formulaire -->
+        <section class="about-section">
+            <div class="about-content">
+                <h2 style="text-align: center;">Envoyez-nous un message</h2>
+                <p style="text-align: center; color: var(--medium-text);">Vous avez des questions ? Remplissez ce formulaire et notre équipe vous recontactera rapidement.</p>
 
-                <div class="form-group">
-                    <label for="email">Adresse Email :</label>
-                    <input type="email" id="email" name="user_email" required>
-                </div>
+                <form action="#" method="POST" class="contact-form" style="max-width: 600px; margin: 40px auto;">
+                    <div class="form-group">
+                        <label for="name">Nom / Prénom :</label>
+                        <input type="text" id="name" name="user_name" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="message">Votre Message :</label>
-                    <textarea id="message" name="user_message" rows="5" required></textarea>
-                </div>
+                    <div class="form-group">
+                        <label for="email">Adresse Email :</label>
+                        <input type="email" id="email" name="user_email" required>
+                    </div>
 
-                <button type="submit" class="cta-button">Envoyer le Message</button>
-            </form>
+                    <div class="form-group">
+                        <label for="message">Votre Message :</label>
+                        <textarea id="message" name="user_message" rows="6" required style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; font-family: inherit; font-size: 1rem;"></textarea>
+                    </div>
+
+                    <button type="submit" class="hero-cta" style="width: 100%; padding: 14px; border: none; cursor: pointer; margin: 0;">Envoyer le Message</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Section CTA -->
+        <section class="intro-section" style="background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%); color: white; border-radius: 12px;">
+            <div class="intro-content" style="text-align: center;">
+                <h2 style="color: white;">Vous préférez tester en direct ?</h2>
+                <p style="color: rgba(255,255,255,0.9); margin-bottom: 30px;">Découvrez les fonctionnalités de Formulama en temps réel.</p>
+                <a href="/app/" class="hero-cta">Accéder à l'application →</a>
+            </div>
         </section>
     </main>
 
     <footer>
         <p>&copy; 2025 Formulama Mini-Entreprise. Tous droits réservés.</p>
+        <p>Contact : <a href="mailto:contact@formulama.com">contact@formulama.com</a></p>
     </footer>
 </body>
 </html>
