@@ -16,13 +16,16 @@ CORS(app)
 
 # --- DÉFINITION DU CHEMIN DU DOSSIER DE DONNÉES ---
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJET_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
-FORMULAMA_VITE_ROOT = os.path.join(PROJET_ROOT, 'formulama_vite')
+SITE_ROOT = SCRIPT_DIR  # Dossier formulama_site
+PROJET_ROOT = os.path.dirname(SITE_ROOT)  # Dossier site
+PARENT_ROOT = os.path.dirname(PROJET_ROOT)  # Dossier PROJET MINI ENTREPRISE
+FORMULAMA_VITE_ROOT = os.path.join(PARENT_ROOT, 'formulama_vite')
 DATA_FOLDER_PATH = os.path.join(FORMULAMA_VITE_ROOT, 'data')
 DIST_FOLDER_PATH = os.path.join(FORMULAMA_VITE_ROOT, 'dist')
 SIGNATURES_FOLDER_PATH = os.path.join(DATA_FOLDER_PATH, 'signatures')
 # Créer le dossier des signatures s'il n'existe pas
 os.makedirs(SIGNATURES_FOLDER_PATH, exist_ok=True)
+print(f"[app.py] SITE_ROOT: {SITE_ROOT}")
 print(f"[app.py] FORMULAMA_VITE_ROOT: {FORMULAMA_VITE_ROOT}")
 print(f"[app.py] DATA_FOLDER_PATH: {DATA_FOLDER_PATH}")
 # ----------------------------------------------------
@@ -147,11 +150,15 @@ def api_ajouter_document():
     else:
         return jsonify({"error": "Erreur lors de l'insertion dans la base de données"}), 500
 
-# Endpoint pour récupérer les documents par catégorie (Méthode GET)
-@app.route('/api/documents/<categorie>', methods=['GET'])
-def api_recuperer_documents(categorie):
-    documents = recuperer_documents_par_categorie(categorie)
-    return jsonify(documents), 200
+# Endpoint pour récupérer les 4 documents récents (DOIT ÊTRE AVANT LA ROUTE GÉNÉRIQUE)
+@app.route('/api/documents/recents', methods=['GET'])
+def api_recuperer_documents_recents():
+    try:
+        documents = recuperer_4_derniers_documents()
+        return jsonify(documents), 200
+    except Exception as e:
+        print(f"Erreur lors de la récupération des documents récents: {e}")
+        return jsonify({"error": "Erreur interne du serveur lors de la récupération des documents récents"}), 500
 
 # Endpoint pour récupérer TOUS les documents
 @app.route('/api/documents/all', methods=['GET'])
@@ -163,15 +170,11 @@ def api_recuperer_tous_documents():
         print(f"Erreur lors de la récupération de tous les documents: {e}")
         return jsonify({"error": "Erreur interne du serveur"}), 500
 
-# Endpoint pour récupérer les 4 documents récents
-@app.route('/api/documents/recents', methods=['GET'])
-def api_recuperer_documents_recents():
-    try:
-        documents = recuperer_4_derniers_documents()
-        return jsonify(documents), 200
-    except Exception as e:
-        print(f"Erreur lors de la récupération des documents récents: {e}")
-        return jsonify({"error": "Erreur interne du serveur lors de la récupération des documents récents"}), 500
+# Endpoint pour récupérer les documents par catégorie (Méthode GET)
+@app.route('/api/documents/<categorie>', methods=['GET'])
+def api_recuperer_documents(categorie):
+    documents = recuperer_documents_par_categorie(categorie)
+    return jsonify(documents), 200
 
 # Endpoint de diagnostic
 @app.route('/api/documents/diagnostiquer-fichiers', methods=['GET'])

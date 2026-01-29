@@ -4,10 +4,13 @@ import os
 
 # Chemin vers la base de données (chemin absolu pour éviter les problèmes relatifs)
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJET_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
-FORMULAMA_VITE_ROOT = os.path.join(PROJET_ROOT, 'formulama_vite')
+SITE_ROOT = SCRIPT_DIR  # Dossier formulama_site
+PROJET_ROOT = os.path.dirname(SITE_ROOT)  # Dossier site
+PARENT_ROOT = os.path.dirname(PROJET_ROOT)  # Dossier PROJET MINI ENTREPRISE
+FORMULAMA_VITE_ROOT = os.path.join(PARENT_ROOT, 'formulama_vite')
 DB_NAME = os.path.join(FORMULAMA_VITE_ROOT, 'data', 'documents.db')
 
+print(f"[gestion_db] SITE_ROOT: {SITE_ROOT}")
 print(f"[gestion_db] FORMULAMA_VITE_ROOT: {FORMULAMA_VITE_ROOT}")
 print(f"[gestion_db] DB_NAME: {DB_NAME}")
 print(f"[gestion_db] DB exists: {os.path.exists(DB_NAME)}") 
@@ -31,7 +34,7 @@ def supprimer_document(doc_id: int):
         return cursor.rowcount > 0 
 
     except sqlite3.Error as e:
-        print(f"🛑 Erreur lors de la suppression du document ID {doc_id} : {e}")
+        print(f"[ERREUR] Erreur lors de la suppression du document ID {doc_id} : {e}")
         return False
     finally:
         if conn:
@@ -67,20 +70,20 @@ def initialiser_base_de_donnees():
         if 'is_signed' not in columns:
             cursor.execute("ALTER TABLE documents ADD COLUMN is_signed BOOLEAN DEFAULT 0")
             conn.commit()
-            print("✅ Colonne 'is_signed' ajoutée à la table 'documents'.")
+            print("[OK] Colonne 'is_signed' ajoutée à la table 'documents'.")
         
         # Ajouter la colonne is_filled si elle n'existe pas
         if 'is_filled' not in columns:
             cursor.execute("ALTER TABLE documents ADD COLUMN is_filled BOOLEAN DEFAULT 0")
             conn.commit()
-            print("✅ Colonne 'is_filled' ajoutée à la table 'documents'.")
+            print("[OK] Colonne 'is_filled' ajoutée à la table 'documents'.")
         
-        print(f"✅ Base de données '{DB_NAME}' initialisée avec succès.")
+        print(f"[OK] Base de données '{DB_NAME}' initialisée avec succès.")
 
     except sqlite3.Error as e:
-        print(f"🛑 Erreur lors de l'initialisation de la base de données : {e}")
+        print(f"[ERREUR] Erreur lors de l'initialisation de la base de données : {e}")
     except Exception as e:
-        print(f"🛑 Erreur système lors de l'initialisation : {e}")
+        print(f"[ERREUR] Erreur système lors de l'initialisation : {e}")
     finally:
         if conn:
             conn.close()
