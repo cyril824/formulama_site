@@ -39,30 +39,38 @@ def launch_background_services():
     print(f"[DEBUG] PRO_DIR: {PRO_DIR}")
     
     try:
-        # Lancer formulama_particuliers
-        particuliers_process = subprocess.Popen(
-            [sys.executable, 'backend/app_server.py'],
-            cwd=PARTICULIERS_DIR,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            stdin=subprocess.DEVNULL
-        )
+        # Fichiers de logs pour chaque service
+        particuliers_log_path = os.path.join(PARTICULIERS_DIR, 'service.log')
+        pro_log_path = os.path.join(PRO_DIR, 'service.log')
+        
+        # Lancer formulama_particuliers avec redirection des logs
+        with open(particuliers_log_path, 'w') as log_file:
+            particuliers_process = subprocess.Popen(
+                [sys.executable, 'backend/app_server.py'],
+                cwd=PARTICULIERS_DIR,
+                stdout=log_file,
+                stderr=subprocess.STDOUT,
+                stdin=subprocess.DEVNULL
+            )
         background_processes.append(('PARTICULIERS', particuliers_process))
         print(f"[OK] Service PARTICULIERS lance (PID: {particuliers_process.pid})")
+        print(f"     Logs: {particuliers_log_path}")
         
         # Petit delai
         time.sleep(2)
         
-        # Lancer formulama_pro
-        pro_process = subprocess.Popen(
-            [sys.executable, 'backend/app_server.py'],
-            cwd=PRO_DIR,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            stdin=subprocess.DEVNULL
-        )
+        # Lancer formulama_pro avec redirection des logs
+        with open(pro_log_path, 'w') as log_file:
+            pro_process = subprocess.Popen(
+                [sys.executable, 'backend/app_server.py'],
+                cwd=PRO_DIR,
+                stdout=log_file,
+                stderr=subprocess.STDOUT,
+                stdin=subprocess.DEVNULL
+            )
         background_processes.append(('PRO', pro_process))
         print(f"[OK] Service PRO lance (PID: {pro_process.pid})")
+        print(f"     Logs: {pro_log_path}")
         
     except Exception as e:
         print(f"[ERREUR] Impossible de lancer les services en arriere-plan: {e}")
