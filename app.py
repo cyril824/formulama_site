@@ -6,13 +6,78 @@ from werkzeug.utils import secure_filename
 import urllib.parse
 import base64 
 import ssl
+import subprocess
+import sys
+import time
+import signal
+import atexit
 
-# Importe toutes les fonctions nécessaires
+# Importe toutes les fonctions necessaires
 from gestion_db import ajouter_document, recuperer_documents_par_categorie, supprimer_document, initialiser_base_de_donnees, recuperer_4_derniers_documents, diagnostiquer_fichiers_locaux, recuperer_tous_documents, recuperer_document_par_id, marquer_document_signe, marquer_document_rempli 
 
 # 1. Configuration de l'application Flask
 app = Flask(__name__, static_folder='.')
 CORS(app) 
+
+# Variables globales pour les processus
+background_processes = []
+
+def launch_background_services():
+    """Lance les services particuliers et pro en arriere-plan"""
+    global background_processes
+    
+    SITE_ROOT = os.path.dirname(os.path.abspath(__file__))
+    SITE_PARENT = os.path.dirname(SITE_ROOT)  # Dossier 'site'
+    PROJET_ROOT = os.path.dirname(SITE_PARENT)  # Dossier 'PROJET MINI ENTREPRISE'
+    PARTICULIERS_DIR = os.path.join(PROJET_ROOT, 'formulama_particuliers')
+    PRO_DIR = os.path.join(PROJET_ROOT, 'formulama_pro')
+    
+    print(f"[DEBUG] SITE_ROOT: {SITE_ROOT}")
+    print(f"[DEBUG] SITE_PARENT: {SITE_PARENT}")
+    print(f"[DEBUG] PROJET_ROOT: {PROJET_ROOT}")
+    print(f"[DEBUG] PARTICULIERS_DIR: {PARTICULIERS_DIR}")
+    print(f"[DEBUG] PRO_DIR: {PRO_DIR}")
+    
+    try:
+        # Lancer formulama_particuliers
+        particuliers_process = subprocess.Popen(
+            [sys.executable, 'backend/app_server.py'],
+            cwd=PARTICULIERS_DIR,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            stdin=subprocess.DEVNULL
+        )
+        background_processes.append(('PARTICULIERS', particuliers_process))
+        print(f"[OK] Service PARTICULIERS lance (PID: {particuliers_process.pid})")
+        
+        # Petit delai
+        time.sleep(2)
+        
+        # Lancer formulama_pro
+        pro_process = subprocess.Popen(
+            [sys.executable, 'backend/app_server.py'],
+            cwd=PRO_DIR,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            stdin=subprocess.DEVNULL
+        )
+        background_processes.append(('PRO', pro_process))
+        print(f"[OK] Service PRO lance (PID: {pro_process.pid})")
+        
+    except Exception as e:
+        print(f"[ERREUR] Impossible de lancer les services en arriere-plan: {e}")
+        import traceback
+        traceback.print_exc()
+
+def cleanup_processes():
+    """Arrete les processus en arriere-plan"""
+    for name, process in background_processes:
+        if process and process.poll() is None:
+            try:
+                process.terminate()
+                process.wait(timeout=5)
+            except:
+                process.kill()
 
 # --- DÉFINITION DU CHEMIN DU DOSSIER DE DONNÉES ---
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -69,7 +134,18 @@ def save_signature(doc_id, signature_base64):
 
 @app.route('/')
 def index():
-    return redirect('/acceuil/acceuil.html')
+    return send_from_directory('.', 'acceuil/acceuil.html')
+
+@app.route('/accueil')
+@app.route('/home')
+def home():
+    """Redirection vers l'accueil"""
+    return send_from_directory('.', 'acceuil/acceuil.html')
+
+@app.route('/selection')
+def selection():
+    """Page de sélection entre Particuliers et Professionnels"""
+    return send_from_directory('.', 'selection/selection.html')
 
 # Route pour l'application Formulama (Vite build)
 @app.route('/app')
@@ -355,7 +431,28 @@ def serve_document_file(filename):
 
 # Lancement du serveur
 if __name__ == '__main__':
+    # Enregistrer la fonction de cleanup pour arreter les processus a la fermeture
+    atexit.register(cleanup_processes)
+    
     initialiser_base_de_donnees()
-    print(f"\n[INFO] Dossier de documents configuré : {DATA_FOLDER_PATH}\n")
-    # Lancement du serveur Flask sur le port 5000
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    print(f"\n[INFO] Dossier de documents configure : {DATA_FOLDER_PATH}\n")
+    
+    print("=" * 60)
+    print("LANCEMENT DE L'INFRASTRUCTURE FORMULAMA")
+    print("=" * 60)
+    
+    # Lancer les services en arriere-plan
+    print("\n[INFO] Lancement des services en arriere-plan...\n")
+    launch_background_services()
+    
+    print("\n" + "=" * 60)
+    print("[OK] TOUS LES SERVICES SONT LANCES")
+    print("=" * 60)
+    print("\nAcces aux services :")
+    print("  - Site vitrine : http://localhost:8000")
+    print("  - Particuliers : http://localhost:5000")
+    print("  - Professionnels : http://localhost:5001")
+    print("\nAppuyez sur Ctrl+C pour arreter tous les services.\n")
+    
+    # Lancement du serveur Flask sur le port 8000
+    app.run(debug=True, host="0.0.0.0", port=8000)
