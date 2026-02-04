@@ -91,15 +91,20 @@
         .back-link {
             color: white;
             text-decoration: none;
-            font-size: 14px;
-            margin-top: 20px;
+            font-size: 16px;
+            margin-top: 30px;
             display: inline-block;
-            opacity: 0.9;
-            transition: opacity 0.3s ease;
+            opacity: 1;
+            transition: all 0.3s ease;
+            padding: 10px 20px;
+            border: 2px solid white;
+            border-radius: 6px;
+            font-weight: 500;
         }
 
         .back-link:hover {
-            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
         @media (max-width: 600px) {
@@ -149,8 +154,9 @@
                     <div class="app-button-desc">Pour les entreprises et organisations</div>
                 </a>
             </div>
+        </div>
 
-            <a href="/acceuil/acceuil.html" class="back-link">← Retour à l'accueil</a>
+        <a href="/acceuil/acceuil.html" class="back-link">← Retour à l'accueil</a>
         </div>
     </div>
 </body>
