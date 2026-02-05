@@ -158,12 +158,14 @@ def selection():
 @app.route('/go-particuliers')
 def go_particuliers():
     """Redirection vers l'application Particuliers"""
-    return redirect('http://localhost:5000', code=302)
+    host = request.host.split(':')[0]  # Récupère l'IP ou localhost
+    return redirect(f'http://{host}:5000', code=302)
 
 @app.route('/go-professionnels')
 def go_professionnels():
     """Redirection vers l'application Professionnels"""
-    return redirect('http://localhost:5001', code=302)
+    host = request.host.split(':')[0]  # Récupère l'IP ou localhost
+    return redirect(f'http://{host}:5001', code=302)
 
 # Route pour l'application Formulama (Vite build)
 @app.route('/app')
