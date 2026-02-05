@@ -155,6 +155,16 @@ def selection():
     """Page de sélection entre Particuliers et Professionnels"""
     return send_from_directory('.', 'selection/selection.html')
 
+@app.route('/go-particuliers')
+def go_particuliers():
+    """Redirection vers l'application Particuliers"""
+    return redirect('http://localhost:5000', code=302)
+
+@app.route('/go-professionnels')
+def go_professionnels():
+    """Redirection vers l'application Professionnels"""
+    return redirect('http://localhost:5001', code=302)
+
 # Route pour l'application Formulama (Vite build)
 @app.route('/app')
 @app.route('/app/')
